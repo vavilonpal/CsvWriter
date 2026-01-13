@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,24 +17,17 @@ public class CsvFileWriter implements Writable {
      * */
     @Override
     public void writeToFile(List<?> data, String fileName) {
-        if (data.isEmpty()) {
-            throw new ArrayIsEmptyException("Fill array with data!");
-        }
+        validateData(data);
 
         Path path = Path.of(fileName);
-        boolean fileExists;
+        Class<?> clazz = data.get(0).getClass();
 
-        Class<?> dataTypeClass = data.get(0).getClass();
-
-        String header = Arrays.stream(dataTypeClass.getDeclaredFields())
+        Field[] fields = getAccessibleFields(clazz);
+        String header = Arrays.stream(fields)
                 .map(Field::getName)
                 .collect(Collectors.joining(","));
 
-        try {
-            fileExists = Files.exists(path) && Files.size(path) > 0;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        boolean fileExists = isFileExists(path);
         if (fileExists) {
             validateHeader(path, header);
         }
@@ -44,41 +38,68 @@ public class CsvFileWriter implements Writable {
                 StandardOpenOption.APPEND
         )) {
             if (!fileExists) {
-                writer.write(header);
-                writer.newLine();
+                writeCsvRow(writer, header);
             }
-            data.stream().map(element -> {
-                        Class<?> clazz = element.getClass();
-                        return Arrays.stream(clazz.getDeclaredFields())
-                                .map(field -> {
-                                    try {
-                                        field.setAccessible(true);
-                                        return escapeCsv(field.get(element).toString());
-                                    } catch (IllegalAccessException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }).collect(Collectors.joining(","));
-                    }
-            ).forEach(csvRow -> {
-                try {
-                    writer.write(csvRow);
-                    writer.newLine();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            for (Object element : data) {
+                String csvRow = joinFieldsToCsvRow(element, fields);
+                writeCsvRow(writer, csvRow);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    private String joinFieldsToCsvRow(Object objectToRow, Field[]fields){
+        return Arrays.stream(fields)
+                .map(field -> {
+                    try {
+                        Object value = field.get(objectToRow);
+                        return escapeCsv(value == null ? "" : value.toString());
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.joining(","));
+
+    }
+    private Field[] getAccessibleFields(Class<?> clazz){
+        Field[] fields = clazz.getDeclaredFields();
+        Arrays.sort(fields, Comparator.comparing(Field::getName));
+        for (Field field : fields) {
+            field.setAccessible(true);
+        }
+        return fields;
+    }
+    private void writeCsvRow(BufferedWriter writer, String csvRow) {
+        try {
+            writer.write(csvRow);
+            writer.newLine();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private String escapeCsv(String value) {
+
         if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
             value = value.replace("\"", "\"\"");
             return "\"" + value + "\"";
         }
         return value;
+    }
+
+    private boolean isFileExists(Path path) {
+        try {
+            return Files.exists(path) && Files.size(path) > 0;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void validateData(List<?> data) {
+        if (data.isEmpty()) {
+            throw new ArrayIsEmptyException("Fill array with data!");
+        }
     }
 
     private void validateHeader(Path path, String existingHeader) {
@@ -96,5 +117,4 @@ public class CsvFileWriter implements Writable {
             throw new RuntimeException(e);
         }
     }
-
 }
