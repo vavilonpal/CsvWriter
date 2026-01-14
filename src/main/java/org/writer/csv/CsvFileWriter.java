@@ -1,4 +1,6 @@
-package org.writer;
+package org.writer.csv;
+
+import org.writer.exception.ArrayIsEmptyException;
 
 import java.io.*;
 import java.lang.reflect.Field;

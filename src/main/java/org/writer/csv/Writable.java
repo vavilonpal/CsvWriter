@@ -1,4 +1,4 @@
-package org.writer;
+package org.writer.csv;
 
 import java.util.List;
 
