@@ -11,13 +11,12 @@ import java.util.List;
 @Getter
 @Setter
 public class CsvContext {
-    public List<?> data;
-    Path path;
-    boolean isFileExists;
-    Class<?> clazz;
-    Field[] fields;
-    String header;
-    BufferedWriter writer;
+    private List<?> data;
+    private Path path;
+    private boolean isFileExists;
+    private Class<?> clazz;
+    private Field[] fields;
+    private String header;
 
     public CsvContext(List<?> data, String fileName) {
         this.data = data;

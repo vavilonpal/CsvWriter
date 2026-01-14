@@ -20,11 +20,18 @@ import java.util.stream.Collectors;
  * <p>This class is not thread-safe.</p>
  */
 public class CsvFileWriter implements Writable {
-    /***
-     * Writes a list of objects to a CSV file
+    /**
+     * Writes a list of objects to a CSV file.
      *
-     * @param data list of objects to be written; must not be empty
-     * @param fileName name of file where data will be written
+     * <p>All objects in the list must be of the same type. The CSV header
+     * is generated automatically using reflection.</p>
+     *
+     * @param data     list of objects to be written; must not be empty and must contain
+     *                 objects of the same type
+     * @param fileName name of the target CSV file
+     * @throws ArrayIsEmptyException    if the data list is empty
+     * @throws IllegalArgumentException if the list contains objects of different types
+     * @throws IllegalStateException    if an existing CSV header does not match
      */
     @Override
     public void writeToFile(List<?> data, String fileName) {
@@ -33,7 +40,6 @@ public class CsvFileWriter implements Writable {
         validateData(csvContext);
         resolveMetadata(csvContext);
         checkFile(csvContext);
-
 
         try (BufferedWriter writer = Files.newBufferedWriter(
                 csvContext.getPath(),
@@ -52,10 +58,11 @@ public class CsvFileWriter implements Writable {
         }
     }
 
-    /***
-     *  Joins field values into a  CSV string
+    /**
+     * Joins field values into a  CSV string
+     *
      * @param objectToRow the object whose data we will connect
-     * @param fields the object whose data we will connect
+     * @param fields      fields of the object to be serialized
      * @return joined row for CSV
      */
     private String joinFieldsToCsvRow(Object objectToRow, Field[] fields) {
@@ -79,7 +86,6 @@ public class CsvFileWriter implements Writable {
      *
      * @param writer the {@link BufferedWriter} used to write data to the CSV file
      * @param csvRow the CSV-formatted row to write
-     *
      * @throws RuntimeException if an I/O error occurs while writing the row
      */
     private void writeCsvRow(BufferedWriter writer, String csvRow) {
@@ -117,15 +123,14 @@ public class CsvFileWriter implements Writable {
      * CSV header matches the header generated from the current data structure.</p>
      *
      * @param context the CSV processing context containing file path and header
-     *
      * @throws IllegalStateException if the existing CSV header does not match
-     * @throws RuntimeException if an I/O error occurs while accessing the file
+     * @throws RuntimeException      if an I/O error occurs while accessing the file
      */
     private void checkFile(CsvContext context) {
         try {
             boolean isFileExists = Files.exists(context.getPath()) && Files.size(context.getPath()) > 0;
             context.setFileExists(isFileExists);
-            if (isFileExists){
+            if (isFileExists) {
                 validateHeader(context.getPath(), context.getHeader());
             }
         } catch (IOException e) {
@@ -137,7 +142,6 @@ public class CsvFileWriter implements Writable {
      * Validates that the CSV context contains data to be written.
      *
      * @param context the CSV processing context
-     *
      * @throws ArrayIsEmptyException if the data list is empty
      */
     private void validateData(CsvContext context) {
@@ -149,11 +153,10 @@ public class CsvFileWriter implements Writable {
     /**
      * Validates that the header of an existing CSV file matches the expected header.
      *
-     * @param path the path to the existing CSV file
+     * @param path       the path to the existing CSV file
      * @param dataHeader the expected CSV header generated from the data structure
-     *
      * @throws IllegalStateException if the headers do not match
-     * @throws RuntimeException if an I/O error occurs while reading the file
+     * @throws RuntimeException      if an I/O error occurs while reading the file
      */
 
     private void validateHeader(Path path, String dataHeader) {
@@ -182,17 +185,17 @@ public class CsvFileWriter implements Writable {
      * @param context the CSV processing context to populate with metadata
      */
     private void resolveMetadata(CsvContext context) {
-        context.clazz = context.data.get(0).getClass();
+        context.setClazz(context.getData().get(0).getClass());
 
-        Field[] fields = context.clazz.getDeclaredFields();
+        Field[] fields = context.getClazz().getDeclaredFields();
         Arrays.sort(fields, Comparator.comparing(Field::getName));
         for (Field f : fields) {
             f.setAccessible(true);
         }
 
-        context.fields = fields;
-        context.header = Arrays.stream(fields)
+        context.setFields(fields);
+        context.setHeader(Arrays.stream(fields)
                 .map(Field::getName)
-                .collect(Collectors.joining(","));
+                .collect(Collectors.joining(",")));
     }
 }
