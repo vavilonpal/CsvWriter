@@ -14,6 +14,7 @@ public class Main {
         List<Person> personList = Person.getTestList();
         List<Student> studentList = Student.getTestList();
 
+
         CsvFileWriter csvFileWriter = new CsvFileWriter();
 
         csvFileWriter.writeToFile(personList, peopleFileName);

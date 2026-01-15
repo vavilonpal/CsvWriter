@@ -1,4 +1,4 @@
-package org.writer.csv;
+package org.writer.csv.context;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,10 +9,10 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CsvContext {
+public class CsvContext implements ContextInterface {
     private List<?> data;
     private Path path;
-    private boolean isFileExists;
+    private boolean isFileExists = false;
     private Class<?> clazz;
     private Field[] fields;
     private String header;
