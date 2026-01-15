@@ -12,6 +12,15 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class WriteDataToCsvFileStep implements PipelineStep<CsvContext> {
+    /**
+     * Writes data from the context to a CSV file.
+     * Writes the header if the file does not already exist,
+     * then appends all data rows.
+     *
+     * @param csvContext context containing file path, header and data
+     * @throws RuntimeException if an I/O error occurs while writing to the file
+     */
+
     @Override
     public void execute(CsvContext csvContext) {
         System.out.println("Start to file writing");

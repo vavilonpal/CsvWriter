@@ -3,7 +3,7 @@ package org.writer.csv;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.writer.csv.pipeline.steps.CsvHeaderMismatchException;
+import org.writer.exception.CsvHeaderMismatchException;
 import org.writer.csv.testdata.StudentTestData;
 import org.writer.exception.ArrayIsEmptyException;
 import org.writer.model.Student;

@@ -8,6 +8,15 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class ResolveMetadataStep implements PipelineStep<CsvContext> {
+    /**
+     * Resolves metadata required for CSV generation.
+     * Determines the model class from the data list, extracts its fields,
+     * sorts them by name and makes them accessible.
+     *
+     * @param csvContext context containing the data to be written
+     * @throws IndexOutOfBoundsException if the data list is empty
+     */
+
     @Override
     public void execute(CsvContext csvContext) {
         csvContext.setClazz(csvContext.getData().get(0).getClass());
@@ -18,6 +27,5 @@ public class ResolveMetadataStep implements PipelineStep<CsvContext> {
             f.setAccessible(true);
         }
         csvContext.setFields(fields);
-        System.out.println("Metadata is set...");
     }
 }
