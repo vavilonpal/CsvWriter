@@ -1,11 +1,21 @@
-dayOfBirth,firstName,lastName,monthOfBirth,yearOfBirth
-12,Alex,Ivanov,JANUARY,1995
-3,Maria,Petrova,FEBRUARY,1998
-21,John,Smith,MARCH,1990
-9,Elena,Popescu,APRIL,1997
-30,Victor,Radu,MAY,1993
-14,Anna,Kowalski,JUNE,2000
-7,Daniel,Novak,JULY,1992
-18,Sofia,Marin,AUGUST,1996
-25,Mihai,Dumitru,SEPTEMBER,1994
-2,Laura,Bianchi,OCTOBER,1999
+name,score
+Alex,"[A, B, A]"
+Maria,"[A, A, A]"
+John,"[B, C, B]"
+Elena,"[A, B, C]"
+Victor,"[B, B, B]"
+Anna,"[A, C, B]"
+Daniel,"[C, B, A]"
+Sofia,"[A, A, B]"
+Mihai,"[B, C, C]"
+Laura,"[A, B, A]"
+Alex,"[A, B, A]"
+Maria,"[A, A, A]"
+John,"[B, C, B]"
+Elena,"[A, B, C]"
+Victor,"[B, B, B]"
+Anna,"[A, C, B]"
+Daniel,"[C, B, A]"
+Sofia,"[A, A, B]"
+Mihai,"[B, C, C]"
+Laura,"[A, B, A]"

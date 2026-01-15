@@ -7,6 +7,7 @@ import org.writer.exception.ArrayIsEmptyException;
 public class ValidateDataStep implements PipelineStep<CsvContext> {
     @Override
     public void execute(CsvContext csvContext) {
+        System.out.println("Validate data...");;
         if (csvContext.getData().isEmpty()) {
             throw new ArrayIsEmptyException("Fill array with data!");
         }

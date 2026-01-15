@@ -18,5 +18,6 @@ public class ResolveMetadataStep implements PipelineStep<CsvContext> {
             f.setAccessible(true);
         }
         csvContext.setFields(fields);
+        System.out.println("Metadata is set...");
     }
 }

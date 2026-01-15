@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class WriteDataToCsvFileStep implements PipelineStep<CsvContext> {
     @Override
     public void execute(CsvContext csvContext) {
+        System.out.println("Start to file writing");
         try (BufferedWriter writer = Files.newBufferedWriter(
                 csvContext.getPath(),
                 StandardOpenOption.CREATE,
@@ -26,9 +27,11 @@ public class WriteDataToCsvFileStep implements PipelineStep<CsvContext> {
                 String csvRow = joinFieldsToCsvRow(element, csvContext.getFields());
                 writeCsvRow(writer, csvRow);
             }
+            System.out.println("The data was successfully written");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 
 

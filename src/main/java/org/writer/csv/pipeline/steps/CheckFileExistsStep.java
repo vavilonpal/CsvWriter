@@ -12,6 +12,8 @@ public class CheckFileExistsStep implements PipelineStep<CsvContext> {
         try {
             boolean isFileExists = Files.exists(csvcontext.getPath()) && Files.size(csvcontext.getPath()) > 0;
             csvcontext.setFileExists(isFileExists);
+
+            System.out.println("File exists: " + isFileExists);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

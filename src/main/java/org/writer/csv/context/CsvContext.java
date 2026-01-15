@@ -1,5 +1,6 @@
 package org.writer.csv.context;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
+//@Builder
 public class CsvContext implements ContextInterface {
     private List<?> data;
     private Path path;

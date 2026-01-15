@@ -17,7 +17,7 @@ public class Main {
 
         CsvFileWriter csvFileWriter = new CsvFileWriter();
 
-        csvFileWriter.writeToFile(personList, peopleFileName);
+        csvFileWriter.writeToFile(studentList, peopleFileName);
         csvFileWriter.writeToFile(studentList, studentshipName);
 
 

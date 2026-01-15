@@ -50,11 +50,7 @@ public class CsvFileWriter implements Writable {
 
         writeToCsvFilePipeline.addStep(new ResolveMetadataStep());
 
-        writeToCsvFilePipeline.addStepByCondition(
-                this.csvContext.isFileExists(),
-                new ValidateDataStep(),
-                new GenerateHeaderStep()
-        );
+        writeToCsvFilePipeline.addStep(new GenerateHeaderStep());
         writeToCsvFilePipeline.addStep(new WriteDataToCsvFileStep());
 
         return writeToCsvFilePipeline;
