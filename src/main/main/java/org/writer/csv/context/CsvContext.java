@@ -1,6 +1,5 @@
 package org.writer.csv.context;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
